@@ -1,4 +1,5 @@
 import bcrypt
+import random
 from nanoid import generate
 from flask import request, jsonify
 from .data import users, padi_datas
@@ -83,9 +84,11 @@ def padi_data_handler():
             'status': 'fail', 
             'message': 'User tidak ditemukan'
         }), 401
+    
+    post_id = random.randint(100000, 999999)
 
     new_padi_data = {
-        'id': generate(size=16),
+        'id': post_id,
         'userIds': user_ids,
         'imageUri': image_uri,
         'label': label,
@@ -103,23 +106,25 @@ def padi_data_handler():
 
 
     padi_datas.append(new_padi_data)
-    store_prediction_data(new_padi_data['id'], new_padi_data)
+    store_prediction_data(str(post_id), new_padi_data)
 
     return jsonify({
         'status': 'success',
         'message': 'Data berhasil diterima',
+        'post_id': post_id,
         'padiDatas': new_padi_data
     }), 201
 
 
 def get_post_detail(post_id):
+    post_id = int(post_id)
     padi_data = next((data for data in padi_datas if data['id'] == post_id), None)
 
     if padi_data:
         return jsonify({
             'status': 'success', 
             'data': {
-                'imageUri': padi_data.get("image_uri"),
+                'imageUri': padi_data.get("imageUri"),
                 "label": padi_data.get("label"),
                 "score": padi_data.get("score"),
                 "desc": padi_data.get("desc"),
