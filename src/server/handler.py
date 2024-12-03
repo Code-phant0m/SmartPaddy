@@ -103,7 +103,7 @@ def padi_data_handler():
 
 
     padi_datas.append(new_padi_data)
-    store_prediction_data(new_padi_data)
+    store_prediction_data(new_padi_data['id'], new_padi_data)
 
     return jsonify({
         'status': 'success',
