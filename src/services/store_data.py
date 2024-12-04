@@ -1,16 +1,27 @@
 from google.cloud import firestore
 
-async def store_user_data(user):
+def store_user_data(user):
     db = firestore.Client()
     
     user_collection = db.collection('users')
     
-    await user_collection.document(user['email']).set(user)
+    user_collection.document(user['email']).set(user)
 
 
-async def store_prediction_data(predictIds, predictData):
+def store_prediction_data(predict_id, predict_data):
     db = firestore.Client()
 
     predict_collection = db.collection('predictions')
 
-    await predict_collection.document(predictIds).set(predictData)
+    predict_collection.document(predict_id).set(predict_data)
+
+
+def get_prediction_data(predict_id):
+    db = firestore.Client()
+    doc_ref = db.collection('predictions').document(predict_id)
+    doc = doc_ref.get()
+
+    if doc.exists:
+        return doc.to_dict()
+    else:
+        return None

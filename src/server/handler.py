@@ -4,8 +4,9 @@ from nanoid import generate
 from flask import request, jsonify, current_app
 from io import BytesIO
 from .data import users, padi_datas
-from src.services.store_data import store_user_data, store_prediction_data
+from src.services.store_data import store_user_data, store_prediction_data, get_prediction_data
 from src.services.inference_service import predict_image
+from google.cloud import firestore
 from werkzeug.utils import secure_filename
 
 def regis_user_handler():
@@ -87,11 +88,11 @@ def padi_data_predict():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
-def store_prediction_data(predict_id, padi_data):
+def append_prediction_data(predict_id, padi_data):
     padi_datas.append(padi_data)
 
 def get_post_detail(predict_id):
-    padi_data_item = next((data for data in padi_datas if data['predict_id'] == predict_id), None)
+    padi_data_item = get_prediction_data(predict_id)
 
     if padi_data_item:
         return jsonify({
@@ -100,11 +101,18 @@ def get_post_detail(predict_id):
                 'result': padi_data_item['result']
             }
         }), 200
+    else:
+        return jsonify({'status': 'fail', 'message': 'Data tidak ditemukan'}), 404
 
-    return jsonify({'status': 'fail', 'message': 'Data tidak ditemukan'}), 404
 
 def get_history(user_id):
-    history = [data for data in padi_datas if data['user_id'] == user_id]
+    db = firestore.Client()
+    predictions_ref = db.collection('predictions')
+    query = predictions_ref.where('user_id', '==', user_id).stream()
+
+    history = []
+    for doc in query:
+        history.append(doc.to_dict())
 
     if history:
         response_history = [{
