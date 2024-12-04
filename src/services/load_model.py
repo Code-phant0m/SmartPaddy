@@ -1,31 +1,44 @@
 import os
 import requests
+from dotenv import load_dotenv
 from tensorflow.keras.models import load_model
-from tempfile import NamedTemporaryFile
+
+load_dotenv()
+
+MODEL_PATH = "./saved_model/model.h5"
+
+def download_model():
+    model_url = os.getenv("MODEL_URLV2")
+    if not model_url:
+        raise ValueError("MODEL_URL is not defined in the .env file")
+
+    os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
+
+    try:
+        response = requests.get(model_url, stream=True)
+        if response.status_code == 200:
+            with open(MODEL_PATH, 'wb') as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    f.write(chunk)
+            print("Model downloaded successfully")
+
+        else:
+            raise Exception(f"Failed to download model. HTTP Status: {response.status_code}")
+    
+    except Exception as e:
+        print(f"Error during model download: {e}")
+        raise e
+
 
 def load_model_from_env():
+    """Load the model into memory, downloading if necessary."""
+    if not os.path.exists(MODEL_PATH):
+        print("Model not found locally. Downloading...")
+        download_model()
     try:
-        # Get the model URL from the environment variable
-        model_url = os.getenv("MODEL_URL")
-        if not model_url:
-            raise ValueError("MODEL_URL environment variable is not set")
-        
-        # Download the model file
-        response = requests.get(model_url)
-        if response.status_code == 200:
-            # Create a temporary file to store the downloaded model
-            with NamedTemporaryFile(delete=False, suffix='.h5') as temp_file:
-                temp_file.write(response.content)
-                model_path = temp_file.name
-                print(f"Model downloaded and saved to: {model_path}")
-
-                # Load the model from the local temporary file
-                model = load_model(model_path)
-                print("Model successfully loaded")
-                return model
-        else:
-            raise Exception(f"Failed to download model. HTTP status code: {response.status_code}")
-    
+        model = load_model(MODEL_PATH)
+        print("Model loaded successfully.")
+        return model
     except Exception as e:
         print(f"Error loading model: {e}")
         raise e

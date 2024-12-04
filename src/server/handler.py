@@ -2,13 +2,12 @@ import bcrypt
 import random
 import os
 from nanoid import generate
-from flask import request, jsonify
-from .data import users, padi_datas
-from services.store_data import store_user_data, store_prediction_data
-from services.inference_service import predict_image
-from werkzeug.utils import secure_filename
+from flask import request, jsonify, current_app
 from io import BytesIO
-from PIL import Image
+from .data import users, padi_datas
+from src.services.store_data import store_user_data, store_prediction_data
+from src.services.inference_service import predict_image
+from werkzeug.utils import secure_filename
 
 def regis_user_handler():
     data = request.get_json()
@@ -73,98 +72,34 @@ def login_user_handler():
         'message': 'Selamat datang di SmartPaddy'
     }), 200
 
-def padi_data_handler():
+def padi_data_predict():
+    model = current_app.config['MODEL']
+    image_file = request.files.get('imageUri')  # 'imageUri' is the key in form-data
+    user_id = request.form.get('userIds')  # 'userIds' is the key for the user ID
+    predict_id = generate(size=16)
+
+    if not image_file:
+        return jsonify({"status": "fail", "message": "Image file is required"}), 400
+    if not user_id:
+        return jsonify({"status": "fail", "message": "User ID is required"}), 400
+
     try:
-        # Extract the image file and userId from form-data
-        image_file = request.files.get('imageUri')  # 'image' is the key used in form-data
-        user_id = request.form.get('userIds')  # 'userIds' is the key for the user ID
+        # Convert FileStorage to BytesIO
+        image_stream = BytesIO(image_file.read())
 
-        if not image_file:
-            return jsonify({
-                "status": "fail",
-                "message": "Image file is required"
-            }), 400
-
-        if not user_id:
-            return jsonify({
-                "status": "fail",
-                "message": "User ID is required"
-            }), 400
-
-        # Read the image file into memory (no need to save it to disk)
-        img = Image.open(BytesIO(image_file.read()))  # Open the image directly from the byte stream
-
-        # Save image temporarily for prediction (without saving it to disk)
-        img_path = "temporary_image.jpg"  # You can ignore saving this to disk as it's just for processing
-        img.save(img_path)
-
-        # Predict the result using the loaded model
-        result = predict_image(img_path)
+        #Predict the result using model
+        result = predict_image(image_stream, model)
 
         # Prepare the prediction data
-        padi_data = {
-            "id": user_id,
-            "image": img_path,
+        padi_datas = {
+            "id": predict_id,
+            "user_id": user_id, 
             "result": result
-        }
+            }
 
-        # Store the prediction data
-        store_prediction_data(user_id, padi_data)
-
-        # Return the success response
-        return jsonify({
-            "status": "success",
-            "message": "Data successfully processed",
-            "padiDatas": padi_data
-        }), 201
-
+        return jsonify({"status": "success", "data": padi_datas}), 200
     except Exception as e:
-        print(f"Error in padi_data_handler: {e}")
-        return jsonify({
-            "status": "error",
-            "message": "An error occurred while processing the request"
-        }), 500
-
-# def padi_data_handler():
-#     try:
-#         # Extract `imageUri` from the request payload
-#         payload = request.get_json()
-#         image_uri = payload.get("imageUri")
-#         user_id = payload.get("userIds")
-
-#         if not image_uri:
-#             return jsonify({
-#                 "status": "fail",
-#                 "message": "Image URI is required"
-#             }), 400
-
-#         # Predict the result using the loaded model
-#         result = predict_image(image_uri)
-
-#         # Prepare the prediction data
-#         padi_data = {
-#             "id": user_id,
-#             "image": image_uri,
-#             "result": result
-#         }
-
-#         # Store the prediction data
-#         store_prediction_data(user_id, padi_data)
-
-#         # Return the success response
-#         return jsonify({
-#             "status": "success",
-#             "message": "Data successfully processed",
-#             "padiDatas": padi_data
-#         }), 201
-
-#     except Exception as e:
-#         print(f"Error in padi_data_handler: {e}")
-#         return jsonify({
-#             "status": "error",
-#             "message": "An error occurred while processing the request"
-#         }), 500
-
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 def get_post_detail(post_id):
     post_id = int(post_id)

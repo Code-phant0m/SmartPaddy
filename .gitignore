@@ -1,6 +1,9 @@
 # Virtual environment
 /venv
 
+# saved model files
+/saved_model
+
 # Env
 .env
 

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Padi Data Prediction</title>
+    <style>
+        /* Simple styles for better visibility */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        input[type="file"], input[type="text"], button {
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        img {
+            margin-top: 20px;
+            max-width: 300px;
+            max-height: 300px;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Padi Data Prediction</h1>
+
+<form id="predictionForm" action="/scan" method="POST" enctype="multipart/form-data">
+    <input type="file" name="imageUri" id="imageUri" accept="image/*" required>
+    <input type="text" name="userIds" id="userIds" placeholder="Enter User ID" required>
+    <button type="submit">Submit</button>
+</form>
+
+<!-- Display uploaded image -->
+<div id="imagePreview"></div>
+
+<!-- Display result -->
+<div id="result"></div>
+
+<script>
+    // Preview the uploaded image
+    document.getElementById('imageUri').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const imgElement = document.createElement('img');
+            imgElement.src = event.target.result;
+            const previewDiv = document.getElementById('imagePreview');
+            previewDiv.innerHTML = ''; // Clear previous preview
+            previewDiv.appendChild(imgElement);
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // Handle form submission with AJAX to get the result
+    document.getElementById('predictionForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        fetch('/scan', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            const resultDiv = document.getElementById('result');
+            if (data.status === 'success') {
+                // Display the result along with the image
+                resultDiv.innerHTML = `
+                    <h3>Prediction Result</h3>
+                    <p>ID: ${data.data.id}</p>
+                    <p>User ID: ${data.data.user_id}</p>
+                    <p>Result: ${JSON.stringify(data.data.result)}</p>
+                `;
+
+                // Display the image result (if the result includes a URL or a similar output)
+                if (data.data.result && data.data.result.imageUrl) {
+                    const imageElement = document.createElement('img');
+                    imageElement.src = data.data.result.imageUrl; // Adjust if the result contains an image URL
+                    resultDiv.appendChild(imageElement);
+                }
+            } else {
+                resultDiv.innerHTML = `<p>Error: ${data.message}</p>`;
+            }
+        })
+        .catch(error => {
+            document.getElementById('result').innerHTML = `<p>Error: ${error.message}</p>`;
+        });
+    });
+</script>
+
+</body>
+</html>

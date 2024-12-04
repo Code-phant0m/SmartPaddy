@@ -1,7 +1,11 @@
-from flask import Flask
-from .handler import regis_user_handler, login_user_handler, padi_data_handler, get_post_detail, get_history
+from flask import Flask, render_template
+from .handler import regis_user_handler, login_user_handler, padi_data_predict, get_post_detail, get_history
 
 def register_routes(app: Flask):
+
+    @app.route('/')
+    def index():
+        return render_template('index.html')
     
     @app.route('/register', methods=['POST'])
     def register():
@@ -13,7 +17,7 @@ def register_routes(app: Flask):
 
     @app.route('/scan', methods=['POST'])
     def scan():
-        return padi_data_handler()
+        return padi_data_predict()
 
     @app.route('/post/<string:post_id>', methods=['GET'])
     def post_detail(post_id):
