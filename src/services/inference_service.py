@@ -92,20 +92,29 @@ c_menangani = [
 
 def predict_image(imageUrl, model):
     try:
-        # Load and preprocess gambar untuk menyesuaikan dengan model
+        # Load and preprocess image to match the model input
         img = image.load_img(imageUrl, target_size=(256, 256))  
         x = image.img_to_array(img)
-        x = np.expand_dims(x, axis=0)  # mengubah batch dimension (shape becomes (1, 256, 256, 3)) 
+        x = np.expand_dims(x, axis=0)  # Add batch dimension (shape becomes (1, 256, 256, 3))
 
         # Predict the class
         predictions = model.predict(x)
-        predicted_class = class_names[np.argmax(predictions)]
+        predicted_index = np.argmax(predictions)
+        predicted_class = class_names[predicted_index]
         predicted_prob = np.max(predictions)
 
-        # Mengkonversi hasil menjadi readable
+        # Add explanation and symptoms based on the predicted class
+        explanation = penjelasan[predicted_index]
+        symptoms = gejala[predicted_index]
+        treat = c_menangani[predicted_index]
+
+        # Convert results to a readable format
         result = {
             "predicted_class": predicted_class,
-            "predicted_prob": float(predicted_prob),  
+            "predicted_prob": float(predicted_prob),
+            "penjelasan": explanation,
+            "gejala": symptoms,
+            "c_menangani": treat
         }
 
         return result
