@@ -10,5 +10,9 @@ RUN pip install -r requirements.txt
 # Copy source code
 COPY . .
 
+# Expose the port for Cloud Run
+ENV PORT=8080
+EXPOSE 8080
+
 # Set the default command
 CMD ["python", "run.py"]
