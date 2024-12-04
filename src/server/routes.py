@@ -3,9 +3,9 @@ from .handler import regis_user_handler, login_user_handler, padi_data_predict, 
 
 def register_routes(app: Flask):
 
-    @app.route('/')
-    def index():
-        return render_template('index.html')
+    # @app.route('/')
+    # def index():
+    #     return render_template('index.html')
     
     @app.route('/register', methods=['POST'])
     def register():
