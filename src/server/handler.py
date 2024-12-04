@@ -4,7 +4,7 @@ import os
 from nanoid import generate
 from flask import request, jsonify, current_app
 from io import BytesIO
-from .data import users, padi_datas
+from .data import users
 from src.services.store_data import store_user_data, store_prediction_data
 from src.services.inference_service import predict_image
 from werkzeug.utils import secure_filename
@@ -73,37 +73,47 @@ def login_user_handler():
     }), 200
 
 def padi_data_predict():
-    model = current_app.config['MODEL']
-    image_file = request.files.get('imageUri')  # 'imageUri' is the key in form-data
-    user_id = request.form.get('userIds')  # 'userIds' is the key for the user ID
-    predict_id = generate(size=16)
+    model = current_app.config['MODEL'] # load Model secara lokal
+    image_file = request.files.get('imageUri')  # 'imageUri' merupakan variable gambar 
+    user_id = request.form.get('userIds')  # 'userIds' merupakan ID dari user yang mengunggah
+    predict_id = generate(size=16) # 'predict_id'
 
+    # Error Handling :
     if not image_file:
         return jsonify({"status": "fail", "message": "Image file is required"}), 400
     if not user_id:
         return jsonify({"status": "fail", "message": "User ID is required"}), 400
 
     try:
-        # Convert FileStorage to BytesIO
+        # Mengubah FileStorage to BytesIO
         image_stream = BytesIO(image_file.read())
 
-        #Predict the result using model
+        # Lakukan prediksi 
         result = predict_image(image_stream, model)
 
-        # Prepare the prediction data
-        padi_datas = {
-            "id": predict_id,
+        # Menyimpan + mengubah bentuk data sesuai format
+        padi_data = {
             "user_id": user_id, 
             "result": result
             }
 
-        return jsonify({"status": "success", "data": padi_datas}), 200
+        # Simpan data ke firestore
+        store_prediction_data(predict_id, padi_data)
+
+        return jsonify({
+            "status": "success", 
+            "data": padi_data
+            }), 200
+
     except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+        return jsonify({
+            "status": "error", 
+            "message": str(e)
+            }), 500
 
 def get_post_detail(post_id):
     post_id = int(post_id)
-    padi_data = next((data for data in padi_datas if data['id'] == post_id), None)
+    padi_data = next((data for data in padi_data if data['id'] == post_id), None)
 
     if padi_data:
         return jsonify({
