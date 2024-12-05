@@ -74,7 +74,7 @@
         reader.readAsDataURL(file);
     });
 
-    // Handle form submission with AJAX to get the result
+    // Handle form submission with AJAX
     document.getElementById('predictionForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
@@ -87,7 +87,7 @@
         .then(data => {
             const resultDiv = document.getElementById('result');
             if (data.status === 'success') {
-                // Display the result along with the image
+                // Display the result 
                 resultDiv.innerHTML = `
                     <h3>Prediction Result</h3>
                     <p>ID: ${data.data.id}</p>
@@ -95,10 +95,10 @@
                     <p>Result: ${JSON.stringify(data.data.result)}</p>
                 `;
 
-                // Display the image result (if the result includes a URL or a similar output)
+                // Display the image result
                 if (data.data.result && data.data.result.imageUrl) {
                     const imageElement = document.createElement('img');
-                    imageElement.src = data.data.result.imageUrl; // Adjust if the result contains an image URL
+                    imageElement.src = data.data.result.imageUrl; 
                     resultDiv.appendChild(imageElement);
                 }
             } else {
