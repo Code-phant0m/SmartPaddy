@@ -61,7 +61,7 @@ c_menangani = [
      5. Memupuk berimbang: Rencanakan pemupukan berimbang sepanjang musim dan pastikan untuk menggunakan kalium yang cukup. \
      6. Menggunakan agens hayati untuk meningkatkan ketahanan tanaman terhadap penyakit. \
      7. Menjaga kelembaban \
-     8. Menjaga jarak tanam. Jarak tanam yang lebih lebar dapat mengurangi serangan penyakit. '
+     8. Menjaga jarak tanam. Jarak tanam yang lebih lebar dapat mengurangi serangan penyakit. ',
 
     '1. Gunakan jarak tanam yang lebih rapat dengan kerapatan daun yang lebih besar yang dapat mentoleransi jumlah hispa yang lebih banyak. \
      2. Tanam tanaman di awal musim untuk menghindari populasi puncak. \
@@ -79,7 +79,7 @@ c_menangani = [
      5. Membasmi virus tungrodan tempat-tempat penyebab perkembangbiakannya, seperti singgang, gulma, bibit tanaman yang sudah terinfeksi penyakit, dan lain sebagainya. \
      6. Menggunakan bahan insektisida pada fase sebelum semai dengan dosis yang masih aman dan direkomendasikan. \
      7. Melakukan pengamatan intensif pada tanaman padi dibantu oleh petugas pengamat hama dan penyakit – pengendali organisme pengganggu tanaman (PHP – POPT). \
-     8. Melakukan sosialisasi dan pembelajaran kepada para petani secara umum melalui sekolah lapang pengendalian hama terpadu(SLPHT).'
+     8. Melakukan sosialisasi dan pembelajaran kepada para petani secara umum melalui sekolah lapang pengendalian hama terpadu(SLPHT).',
 
     '1. Mengendalikan hama: Anda dapat menggunakan pestisida organik untuk mengendalikan hama yang menyerang tanaman padi, seperti tikus, wereng, belalang, dan walang sangit. Anda juga dapat memasang orang-orangan di sawah untuk mengusir burung yang merusak tanaman padi. \
      2. Mengendalikan penyakit: dengan menggunakan fungisida multifungsi untuk mengendalikan penyakit yang disebabkan oleh cendawan patogen, seperti bercak daun, bercak pelepah, dan busuk batang. \
