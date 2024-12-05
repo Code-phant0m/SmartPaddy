@@ -8,6 +8,7 @@ from src.services.store_data import store_user_data, store_prediction_data, get_
 from src.services.inference_service import predict_image
 from google.cloud import firestore
 from werkzeug.utils import secure_filename
+from datetime import datetime
 
 def regis_user_handler():
     data = request.get_json()
@@ -74,9 +75,11 @@ def padi_data_predict():
     try:
         image_stream = BytesIO(image_file.read())
         result = predict_image(image_stream, model)
+        created_at = datetime.utcnow()
 
         padi_data = {
             "user_id": user_id,
+            "created_at": created_at,
             "predict_id": predict_id,
             "result": result
         }
