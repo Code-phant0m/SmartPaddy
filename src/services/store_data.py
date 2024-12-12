@@ -6,7 +6,7 @@ PREDICTION_COLLECTION = "predictions"
 
 def store_user_data(user):
     try:
-        db.collection(USER_COLLECTION).document(user['email']).set(user)
+        db.collection(USER_COLLECTION).document(user['email'].lower()).set(user)
     except Exception as e:
         print(f"Error storing user data: {e}")
 
