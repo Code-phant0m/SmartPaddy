@@ -92,26 +92,49 @@ c_menangani = [
 
 def predict_image(imageUrl, model):
     try:
-        # Load and preprocess image to match the model input
+        # Load dan preprocess image untuk menyesuaikan dengan input model
         img = image.load_img(imageUrl, target_size=(256, 256))  
         x = image.img_to_array(img)
-        x = np.expand_dims(x, axis=0)  # Add batch dimension (shape becomes (1, 256, 256, 3))
+        x = np.expand_dims(x, axis=0)  # menambah batch dimension (1, 256, 256, 3)
 
-        # Predict the class
+        # Melakukan prediksi
         predictions = model.predict(x)
         predicted_index = np.argmax(predictions)
         predicted_class = class_names[predicted_index]
         predicted_prob = np.max(predictions)
+        float_predicted_prob = float(predicted_prob)
 
-        # Add explanation and symptoms based on the predicted class
+        # Membuat penjelasan, gejala, dan cara menangani sesuai class 
         explanation = penjelasan[predicted_index]
         symptoms = gejala[predicted_index]
         treat = c_menangani[predicted_index]
 
-        # Convert results to a readable format
+        # Model akurasi dan threshold
+        model_acc = 0.9
+        model_threshold = 0.8
+
+        # hasil dibawah threshold
+        if float_predicted_prob < model_threshold:
+            result = False
+            return result
+
+        # hasil dibawah tingkat akurasi tapi diatas threshold
+        if model_threshold <= float_predicted_prob < model_acc:
+            result = {
+                "predicted_class": predicted_class,
+                "predicted_prob": float_predicted_prob,
+                "message": "Under the model Accuracy", 
+                "penjelasan": explanation,
+                "gejala": symptoms,
+                "c_menangani": treat
+            }
+
+            return result
+
+        # hasil ideal
         result = {
             "predicted_class": predicted_class,
-            "predicted_prob": float(predicted_prob),
+            "predicted_prob": float_predicted_prob,
             "penjelasan": explanation,
             "gejala": symptoms,
             "c_menangani": treat

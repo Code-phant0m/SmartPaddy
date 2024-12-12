@@ -1,10 +1,13 @@
 absl-py==2.1.0
 aniso8601==9.0.1
+argon2-cffi==23.1.0
+argon2-cffi-bindings==21.2.0
 astunparse==1.6.3
 bcrypt==4.2.1
 blinker==1.9.0
 cachetools==5.5.0
 certifi==2024.8.30
+cffi==1.17.1
 charset-normalizer==3.4.0
 click==8.1.7
 Flask==3.1.0
@@ -16,7 +19,10 @@ google-api-core==2.23.0
 google-auth==2.36.0
 google-cloud-core==2.4.1
 google-cloud-firestore==2.19.0
+google-cloud-storage==2.19.0
+google-crc32c==1.6.0
 google-pasta==0.2.0
+google-resumable-media==2.7.2
 googleapis-common-protos==1.66.0
 grpcio==1.68.1
 grpcio-status==1.68.1
@@ -42,6 +48,7 @@ proto-plus==1.25.0
 protobuf==5.29.0
 pyasn1==0.6.1
 pyasn1_modules==0.4.1
+pycparser==2.22
 Pygments==2.18.0
 python-dotenv==1.0.1
 pytz==2024.2

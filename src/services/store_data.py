@@ -1,27 +1,38 @@
 from google.cloud import firestore
 
+db = firestore.Client()
+USER_COLLECTION = "users"
+PREDICTION_COLLECTION = "predictions"
+
 def store_user_data(user):
-    db = firestore.Client()
-    
-    user_collection = db.collection('users')
-    
-    user_collection.document(user['email']).set(user)
+    try:
+        db.collection(USER_COLLECTION).document(user['email']).set(user)
+    except Exception as e:
+        print(f"Error storing user data: {e}")
 
+def fetch_user_by_email(email):
+    try:
+        user_doc = db.collection(USER_COLLECTION).document(email).get()
+        if user_doc.exists:
+            return user_doc.to_dict()
+        return None
+    except Exception as e:
+        print(f"Error fetching user data: {e}")
+        return None
 
-def store_prediction_data(predict_id, predict_data):
-    db = firestore.Client()
-
-    predict_collection = db.collection('predictions')
-
-    predict_collection.document(predict_id).set(predict_data)
-
+def store_prediction_data(predict_id, data):
+    try:
+        db.collection(PREDICTION_COLLECTION).document(predict_id).set(data)
+    except Exception as e:
+        print(f"Error storing prediction data: {e}")
+        raise ValueError("Failed to store prediction data.") from e
 
 def get_prediction_data(predict_id):
-    db = firestore.Client()
-    doc_ref = db.collection('predictions').document(predict_id)
-    doc = doc_ref.get()
-
-    if doc.exists:
-        return doc.to_dict()
-    else:
+    try:
+        doc = db.collection(PREDICTION_COLLECTION).document(predict_id).get()
+        if doc.exists:
+            return doc.to_dict()
+        return None
+    except Exception as e:
+        print(f"Error fetching prediction data: {e}")
         return None
