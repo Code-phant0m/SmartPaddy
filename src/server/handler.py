@@ -18,7 +18,7 @@ argon_hash = argon2.PasswordHasher()
 def regis_user_handler():
     data = request.get_json()
     name = data.get('name')
-    email = data.get('email')
+    email = data.get('email').strip().lower()
     password = data.get('password')
 
     if not all([name, email, password]):
@@ -52,7 +52,7 @@ def regis_user_handler():
 
 def login_user_handler():
     data = request.get_json()
-    email = data.get('email')
+    email = data.get('email').strip().lower()
     password = data.get('password')
 
     if not all([email, password]):
