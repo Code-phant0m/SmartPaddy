@@ -93,12 +93,13 @@ c_menangani = [
 def predict_image(imageUrl, model):
     try:
         # Load dan preprocess image untuk menyesuaikan dengan input model
-        img = image.load_img(imageUrl, target_size=(224, 224))  
-        x = image.img_to_array(img)
-        x = np.expand_dims(x, axis=0) 
+        img = image.load_img(imageUrl, target_size=(256, 256), color_mode='rgb')  
+        x = image.img_to_array(img) 
+        x = np.expand_dims(x, axis=0)  # Add batch dimension
 
         # Melakukan prediksi
         predictions = model.predict(x)
+
         predicted_index = np.argmax(predictions)
         predicted_class = class_names[predicted_index]
         predicted_prob = np.max(predictions)
