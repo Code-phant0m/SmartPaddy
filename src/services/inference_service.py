@@ -2,7 +2,6 @@ import numpy as np
 from tensorflow.keras.preprocessing import image
 
 # Class dari semua jenis penyakit
-# Class dari semua jenis penyakit
 class_names = ['blast', 'blight', 'brown spot', 'healthy', 'hispa', 'tungro']
 
 penjelasan = [
