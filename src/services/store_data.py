@@ -10,7 +10,7 @@ def store_user_data(user):
     except Exception as e:
         print(f"Error storing user data: {e}")
 
-def fetch_user_by_email(phone):
+def fetch_user_by_phone(phone):
     try:
         user_doc = db.collection(USER_COLLECTION).document(phone).get()
         if user_doc.exists:
