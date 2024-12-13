@@ -2,34 +2,33 @@ import numpy as np
 from tensorflow.keras.preprocessing import image
 
 # Class dari semua jenis penyakit
-class_names = ['blast', 'blight', 'brown spot', 'hispa', 'tungro', 'healthy']
+# Class dari semua jenis penyakit
+class_names = ['blast', 'blight', 'brown spot', 'healthy', 'hispa', 'tungro']
+
 penjelasan = [
     'Penyakit Blast(Blas) adalah penyakit yang disebabkan oleh jamur Pyricularia oryzae. Jamur ini dapat menginfeksi pada semua fase pertumbuhan tanaman padi mulai dari persemaian sampai menjelang panen.',
     'Penyakit Blight atau Hawar Daun (Bacterial Leaf Blight) adalah penyakit yang disebabkan oleh bakteri Xanthomonas campestris pv. oryzae (Xoo). Penyakit hawar daun ini disebabkan oleh patogen yang menginfeksi daun padi pada semua fase pertumbuhan tanaman, mulai dari pesemaian sampai menjelang panen. Tingkat kerusakan bervariasi antara 15-80%, bergantung pada tingkat serangan.',
     'Penyakit (Brown Spot) atau bercak coklat pada padi adalah penyakit yang disebabkan oleh jamur Cochliobolus miyabeanus  dan ditandai dengan bercak berwarna coklat gelap atau merah-coklat pada daun dan batang padi.',
+    'Padi Sehat (Healthy) mengacu pada kondisi tanaman padi yang tumbuh optimal tanpa serangan hama atau penyakit. Namun, dalam konteks penyakit, "padi sehat" sering dikaitkan dengan tanaman yang bebas dari berbagai gangguan seperti bakteri, jamur, dan serangga.',
     'Hispa adalah penyakit pada tanaman padi yang disebabkan oleh serangan serangga Dicladispa armigera, yang dikenal sebagai kumbang Hispa. Serangga ini menyerang daun padi, menyebabkan kerusakan yang terlihat sebagai garis-garis putih akibat penggerekannya.',
-    'Tungro merupakan penyakit yang disebabkan oleh infeksi ganda dari 2 jenis virus yang berlainan. Kedua virus yang dimaksud adalah Rice Tungro Spherical Virus (RTSV) dan Rice Tungro Bacilliform Virus (RTBV). Penyakit ini bisa ditularkan oleh beberapa jenis hewan serangga, tetapi yang paling cepat menularkan adalah spesies wereng hijau. Penyebaran penyakit tungro semakin meluas cepat bukan hanya disebabkan oleh kepadatan populasi wereng hijau saja. Penyakit tersebut bisa semakin parah dan ganas karena adanya inokulum tungro atau faktor lainnya. Misalnya, tanaman padi yang sudah terinfeksi virus tungro yang sudah terlanjur ditanam, gulma, singgang, atau yang lainnya. Ada juga penyebab dari perilaku petani itu sendiri saat menanam padi. Misalnya, pemilihan bibit padi yang berkualitas rendah sehingga rentan terserang penyakit, penanaman padi yang tidak serempak, atau bahkan pengaruh musim terutama musim penghujan dengan kelembaban tinggi. Dipastikan serangan wereng hijau akan semakin mengganas jika tidak segera diantisipasi.',
-    'Padi Sehat (Healthy) mengacu pada kondisi tanaman padi yang tumbuh optimal tanpa serangan hama atau penyakit. Namun, dalam konteks penyakit, "padi sehat" sering dikaitkan dengan tanaman yang bebas dari berbagai gangguan seperti bakteri, jamur, dan serangga. '
+    'Tungro merupakan penyakit yang disebabkan oleh infeksi ganda dari 2 jenis virus yang berlainan. Kedua virus yang dimaksud adalah Rice Tungro Spherical Virus (RTSV) dan Rice Tungro Bacilliform Virus (RTBV). Penyakit ini bisa ditularkan oleh beberapa jenis hewan serangga, tetapi yang paling cepat menularkan adalah spesies wereng hijau. Penyebaran penyakit tungro semakin meluas cepat bukan hanya disebabkan oleh kepadatan populasi wereng hijau saja. Penyakit tersebut bisa semakin parah dan ganas karena adanya inokulum tungro atau faktor lainnya. Misalnya, tanaman padi yang sudah terinfeksi virus tungro yang sudah terlanjur ditanam, gulma, singgang, atau yang lainnya. Ada juga penyebab dari perilaku petani itu sendiri saat menanam padi. Misalnya, pemilihan bibit padi yang berkualitas rendah sehingga rentan terserang penyakit, penanaman padi yang tidak serempak, atau bahkan pengaruh musim terutama musim penghujan dengan kelembaban tinggi. Dipastikan serangan wereng hijau akan semakin mengganas jika tidak segera diantisipasi.'
 ]
+
 gejala = [
     '1. Blas Daun (leaf blast). Adanya bercak berbentuk belah ketupat pada daun, pada bagian tepi bercak berwarna kecoklatan dan pada bagian tengah bercak berwarna putih keabuan.\
      2. Blas leher (node blast). Pada malai terlihat jika ada tangkai malai yang membusuk/ blas leher yang menyebabkan gabah hampa jika serangan terjadi sebelum masa pengisian bulir. Infeksi pada batang menyebabkan batang busuk dan mudah patah bila terhembus angin.',
-
     'Pada awalnya gejala terdapat pada tepi daun atau bagian daun yang luka berupa garis bercak kebasahan, bercak tersebut meluas berwarna hijau keabu-abuan, selanjutnya seluruh daun menjadi keriput dan kering akhirnya layu. Bagian yang kering ini akan semakin meluas ke arah tulang daun hingga seluruh daun akan mengering. Serangan oleh bakteri ini dapat terjadi pada fase vegetatif dan generatif yang mengakibatkan kerusakan tanaman serta menurunkan hasil produksi tanaman padi.',
-
     'Pada daun terdapat bercak-bercak sempit memanjang, berwarna coklat kemerahan, sejajar dengan ibu tulang daun. Banyaknya bercak makin meningkat pada waktu tanaman membentuk anakan. Pada serangan yang berat bercak-bercak terdapat pada upih daun, batang, dan bunga. Pada saat tanaman mulai masak gejala yang berat mulai terlihat pada daun bendera. Gejala mulai tampak 2-4 minggu setelah padi di pindah, dan gejala paling berat tampak lebih kurang satu bulan sebelum panen.',
-
+    'Tanaman padi yang sehat dapat ditandai dengan: Tanaman padi tumbuh subur, bebas dari hama dan penyakit, memiliki daun yang sehat, Batang tanaman padi kokoh, Gabah padi bernas.',
     '1. Lubang kecil di daun: Daun terlihat berlubang kecil akibat gigitan kumbang dewasa. \
      2. Garis putih memanjang: Larva menyerang jaringan daun, menciptakan garis putih panjang yang dapat melemahkan proses fotosintesis.\
      3. Daun menjadi kering: Kerusakan parah dapat menyebabkan daun menjadi kering dan berwarna cokelat.',
-
     '1. Perubahan warna pada daun muda tanaman padi yang menguning hingga berwarna jingga. \
      2.Daun-daun tersebut juga terlihat melintir.\
      3. Tanaman padi menjadi kerdil karena jarak antar buku atau ruas memendek.\
-     4. Jumlah tanaman padimuda atau anakan menjadi berkurang drastis karena lebih rentan terserang virus tungro',
-
-    'Tanaman padi yang sehat dapat ditandai dengan: Tanaman padi tumbuh subur, bebas dari hama dan penyakit, memiliki daun yang sehat, Batang tanaman padi kokoh, Gabah padi bernas.'
+     4. Jumlah tanaman padimuda atau anakan menjadi berkurang drastis karena lebih rentan terserang virus tungro'
 ]
+
 c_menangani = [
     '1. Menggunakan varietas unggul yang tahan terhadap penyakit blas,  seperti Inpari 21, Inpari 22, Inpari 26, Inpari 27, Inpago 4, Inpago 5, Inpago 6, Inpago 7, dan Inpago 8.\
      2. Gunakan benih yang sehat.\
@@ -63,6 +62,14 @@ c_menangani = [
      7. Menjaga kelembaban \
      8. Menjaga jarak tanam. Jarak tanam yang lebih lebar dapat mengurangi serangan penyakit. ',
 
+    '1. Mengendalikan hama: Anda dapat menggunakan pestisida organik untuk mengendalikan hama yang menyerang tanaman padi, seperti tikus, wereng, belalang, dan walang sangit. Anda juga dapat memasang orang-orangan di sawah untuk mengusir burung yang merusak tanaman padi. \
+     2. Mengendalikan penyakit: dengan menggunakan fungisida multifungsi untuk mengendalikan penyakit yang disebabkan oleh cendawan patogen, seperti bercak daun, bercak pelepah, dan busuk batang. \
+     3. Menggunakan pupuk organik dan kapur pertanian untuk memperbaiki kesuburan tanah. \
+     4. Melakukan penyiangan tanaman padi setiap dua minggu sekali. \
+     5. Melakukan pengairan yang wajar sesuai kebutuhan untuk mencegah kekeringan. \
+     6. Memilih bibit unggul yang tahan terhadap serangan hama. \
+     7. Melakukan rotasi tanam dengan cara menyelipkan tanaman palawija di antara tanaman padi untuk mengurangi serangga hama dan penyakit. ',
+
     '1. Gunakan jarak tanam yang lebih rapat dengan kerapatan daun yang lebih besar yang dapat mentoleransi jumlah hispa yang lebih banyak. \
      2. Tanam tanaman di awal musim untuk menghindari populasi puncak. \
      3. Potong ujung pucuk untuk mencegah serangga bertelur. \
@@ -79,16 +86,9 @@ c_menangani = [
      5. Membasmi virus tungrodan tempat-tempat penyebab perkembangbiakannya, seperti singgang, gulma, bibit tanaman yang sudah terinfeksi penyakit, dan lain sebagainya. \
      6. Menggunakan bahan insektisida pada fase sebelum semai dengan dosis yang masih aman dan direkomendasikan. \
      7. Melakukan pengamatan intensif pada tanaman padi dibantu oleh petugas pengamat hama dan penyakit – pengendali organisme pengganggu tanaman (PHP – POPT). \
-     8. Melakukan sosialisasi dan pembelajaran kepada para petani secara umum melalui sekolah lapang pengendalian hama terpadu(SLPHT).',
-
-    '1. Mengendalikan hama: Anda dapat menggunakan pestisida organik untuk mengendalikan hama yang menyerang tanaman padi, seperti tikus, wereng, belalang, dan walang sangit. Anda juga dapat memasang orang-orangan di sawah untuk mengusir burung yang merusak tanaman padi. \
-     2. Mengendalikan penyakit: dengan menggunakan fungisida multifungsi untuk mengendalikan penyakit yang disebabkan oleh cendawan patogen, seperti bercak daun, bercak pelepah, dan busuk batang. \
-     3. Menggunakan pupuk organik dan kapur pertanian untuk memperbaiki kesuburan tanah. \
-     4. Melakukan penyiangan tanaman padi setiap dua minggu sekali. \
-     5. Melakukan pengairan yang wajar sesuai kebutuhan untuk mencegah kekeringan. \
-     6. Memilih bibit unggul yang tahan terhadap serangan hama. \
-     7. Melakukan rotasi tanam dengan cara menyelipkan tanaman palawija di antara tanaman padi untuk mengurangi serangga hama dan penyakit. '
+     8. Melakukan sosialisasi dan pembelajaran kepada para petani secara umum melalui sekolah lapang pengendalian hama terpadu(SLPHT).'
 ]
+
 
 def predict_image(imageUrl, model):
     try:
