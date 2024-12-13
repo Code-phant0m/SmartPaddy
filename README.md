@@ -58,6 +58,73 @@ The SmartPaddy API provides endpoints to manage user authentication, perform ima
 
 ## Deploy API With GitHub Repository In Cloud Run
 
+### Step 1: Fork the Repository
+**Fork the Repository**:
+   - Go to the original GitHub repository containing the API code.
+   - Click the **Fork** button to create a copy of the repository in your GitHub account.
+     
+---
+
+### Step 2: Set Up Google Cloud Run
+
+1. **Go to Google Cloud Console**:
+   - Navigate to [Google Cloud Console](https://console.cloud.google.com/).
+
+2. **Enable Cloud Run**:
+   - Ensure the **Cloud Run API** is enabled for your project. If not, enable it by searching for "Cloud Run" in the **APIs & Services** section.
+
+3. **Create a New Cloud Run Service**:
+   - In the **Cloud Run** section, click on **Create Service**.
+
+4. **Select Deployment Source**:
+   - Choose **Deploy from Source Repository**.
+   - Click **Set up with Cloud Build** if prompted.
+
+---
+
+### Step 3: Link Your GitHub Repository
+
+1. **Connect Your GitHub Account**:
+   - During setup, authorize Google Cloud to access your GitHub account.
+
+2. **Select Your Repository**:
+   - Select the forked repository from your GitHub account from the list of repositories.
+
+3. **Pick the Branch**:
+   - Choose the branch you want to deploy (e.g.,`cc-main`).
+
+---
+
+### Step 4: Configure Build and Deployment
+
+1. **Set Build Options**:
+   - Ensure your repository contains a `Dockerfile` configuration file. Google Cloud will automatically detect these files.
+
+2. **Specify Runtime Settings**:
+   - Configure settings such as the service name, region, and secret variable.
+   - Adjust CPU allocation and memory limits based on the API requirements.
+
+3. **Enable Continuous Deployment**:
+   - Check the option for **Continuous Deployment** to automatically redeploy the service whenever new changes are pushed to the selected branch.
+
+---
+
+### Step 5: Deploy the API
+
+1. **Review and Deploy**:
+   - Review your configuration and click **Deploy**.
+   - Google Cloud Run will build the container from your GitHub repository, deploy it, and provide you with a public URL.
+
+2. **Monitor Deployment**:
+   - Use the **Cloud Build** section in Google Cloud Console to monitor the build and deployment process.
+
+---
+
+### Step 6: Test the Deployed API
+**Access the API**:
+   - Copy the URL provided by Cloud Run and use it to test the API.
+   - Use tools like **Postman** or `curl` to verify the endpoints.
+
 ---
 
 ## Endpoints
@@ -73,7 +140,7 @@ Registers a new user. The `regis_user_handler` function processes the request.
 #### Expected Input:
 
 - **Name**: A name of User.
-- **Email**: A email of User.
+- **Phone**: A phone number of User.
 - **Password**: A password for User
 
 #### Expected Outputs:
@@ -86,19 +153,19 @@ Registers a new user. The `regis_user_handler` function processes the request.
   "message": "String",
   "status": "success",
   "user": {
-    "email": "String",
+    "phone": "String",
     "name": "String",
     "token": "String"
   }
 }
 ```
 
-2. **Case 2: Email already registered**  
+2. **Case 2: Phone number already registered**  
    **HTTP Status Code:** 400
 
 ```json
 {
-  "message": "Email sudah terdaftar",
+  "message": "No HP sudah terdaftar",
   "status": "fail"
 }
 ```
@@ -125,7 +192,7 @@ Authenticates an existing user. The `login_user_handler` function processes the 
 
 #### Expected Input:
 
-- **Email**: A email for authentication.
+- **Phone**: A phone number for authentication.
 - **Password**: A password for authentication.
 
 #### Expected Outputs:
@@ -136,29 +203,29 @@ Authenticates an existing user. The `login_user_handler` function processes the 
 ```json
 {
   "message": "String",
-  "email": "String",
+  "phone": "String",
   "name": "String",
   "status": "success",
   "token": "String"
 }
 ```
 
-2. **Case 2: Wrong email or wrong password**  
+2. **Case 2: Wrong phone number or wrong password**  
    **HTTP Status Code:** 401
 
 ```json
 {
-  "message": "Email atau password salah",
+  "message": "No HP atau password salah",
   "status": "fail"
 }
 ```
 
-3. **Case 3: No data input or No email or No password**  
+3. **Case 3: No data input or No phone or No password**  
    **HTTP Status Code:** 400
 
 ```json
 {
-  "message": "Mohon isi email dan password",
+  "message": "Mohon isi no HP dan password",
   "status": "fail"
 }
 ```
