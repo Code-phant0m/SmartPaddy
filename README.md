@@ -1,6 +1,9 @@
 
 # SmartPaddy - Smart App For Farmers
 
+# IMPORTANT !
+## This Fork Repo is for deploying in CloudRun
+
 ## Bangkit Capstone Project 2024
 
 Bangkit Capstone Team ID : C242-PS186 </br>
