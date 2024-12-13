@@ -6,7 +6,7 @@ from nanoid import generate
 from flask import request, jsonify, current_app
 from io import BytesIO
 from .data import users
-from src.services.store_data import store_user_data, fetch_user_by_phone, store_prediction_data, get_prediction_data
+from src.services.store_data import store_user_data, fetch_user_by_email, store_prediction_data, get_prediction_data
 from src.services.inference_service import predict_image
 from google.cloud import firestore
 from werkzeug.utils import secure_filename
@@ -18,14 +18,14 @@ argon_hash = argon2.PasswordHasher()
 def regis_user_handler():
     data = request.get_json()
     name = data.get('name')
-    phone = data.get('phone')
+    email = data.get('email').strip().lower()
     password = data.get('password')
 
-    if not all([name, phone, password]):
+    if not all([name, email, password]):
         return jsonify({'status': 'fail', 'message': 'Mohon isi seluruh data'}), 400
 
-    if fetch_user_by_phone(phone):
-        return jsonify({'status': 'fail', 'message': 'No HP sudah terdaftar'}), 400
+    if fetch_user_by_email(email):
+        return jsonify({'status': 'fail', 'message': 'Email sudah terdaftar'}), 400
 
     try:
         hashed_password = argon_hash.hash(password.encode('utf-8'))
@@ -34,7 +34,7 @@ def regis_user_handler():
         new_user = {
             'user_id': user_id,
             'name': name,
-            'phone': phone,
+            'email': email,
             'hashed_password': hashed_password
         }
     
@@ -43,7 +43,7 @@ def regis_user_handler():
         return jsonify({
             'status': 'success',
             'message': 'User berhasil ditambahkan',
-            'user': {'user_id': user_id, 'name': name, 'phone': phone}
+            'user': {'user_id': user_id, 'name': name, 'email': email}
         }), 201
     
     except Exception as e:
@@ -52,14 +52,14 @@ def regis_user_handler():
 
 def login_user_handler():
     data = request.get_json()
-    phone = data.get('phone')
+    email = data.get('email').strip().lower()
     password = data.get('password')
 
-    if not all([phone, password]):
-        return jsonify({'status': 'fail', 'message': 'Mohon isi no HP dan password'}), 400
+    if not all([email, password]):
+        return jsonify({'status': 'fail', 'message': 'Mohon isi email dan password'}), 400
 
     # Fetch user data from Firestore
-    user = fetch_user_by_phone(phone)
+    user = fetch_user_by_email(email)
 
     # Check if user exists
     if user is None:
@@ -70,11 +70,11 @@ def login_user_handler():
 
     # Verify the provided password against the stored hashed password
     if not verify_password(hash_pass, password):
-        return jsonify({'status': 'fail', 'message': 'No HP atau password salah'}), 401
+        return jsonify({'status': 'fail', 'message': 'Email atau password salah'}), 401
 
     return jsonify({
         'status': 'success',
-        'phone': user['phone'],
+        'email': user['email'],
         'name': user['name'],
         'user_id': user['user_id'],
         'message': 'Selamat datang di SmartPaddy'
