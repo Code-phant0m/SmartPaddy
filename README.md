@@ -140,7 +140,7 @@ Registers a new user. The `regis_user_handler` function processes the request.
 #### Expected Input:
 
 - **Name**: A name of User.
-- **Phone**: A phone number of User.
+- **Email**: A email number of User.
 - **Password**: A password for User
 
 #### Expected Outputs:
@@ -153,19 +153,19 @@ Registers a new user. The `regis_user_handler` function processes the request.
   "message": "String",
   "status": "success",
   "user": {
-    "phone": "String",
+    "email": "String",
     "name": "String",
     "token": "String"
   }
 }
 ```
 
-2. **Case 2: Phone number already registered**  
+2. **Case 2: Email already registered**  
    **HTTP Status Code:** 400
 
 ```json
 {
-  "message": "No HP sudah terdaftar",
+  "message": "Email sudah terdaftar",
   "status": "fail"
 }
 ```
@@ -192,7 +192,7 @@ Authenticates an existing user. The `login_user_handler` function processes the 
 
 #### Expected Input:
 
-- **Phone**: A phone number for authentication.
+- **Email**: An email for authentication.
 - **Password**: A password for authentication.
 
 #### Expected Outputs:
@@ -203,29 +203,29 @@ Authenticates an existing user. The `login_user_handler` function processes the 
 ```json
 {
   "message": "String",
-  "phone": "String",
+  "email": "String",
   "name": "String",
   "status": "success",
   "token": "String"
 }
 ```
 
-2. **Case 2: Wrong phone number or wrong password**  
+2. **Case 2: Wrong email or wrong password**  
    **HTTP Status Code:** 401
 
 ```json
 {
-  "message": "No HP atau password salah",
+  "message": "email atau password salah",
   "status": "fail"
 }
 ```
 
-3. **Case 3: No data input or No phone or No password**  
+3. **Case 3: No data input or No email or No password**  
    **HTTP Status Code:** 400
 
 ```json
 {
-  "message": "Mohon isi no HP dan password",
+  "message": "Mohon isi email dan password",
   "status": "fail"
 }
 ```
