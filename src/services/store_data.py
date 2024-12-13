@@ -6,13 +6,13 @@ PREDICTION_COLLECTION = "predictions"
 
 def store_user_data(user):
     try:
-        db.collection(USER_COLLECTION).document(user['email'].lower()).set(user)
+        db.collection(USER_COLLECTION).document(user['phone']).set(user)
     except Exception as e:
         print(f"Error storing user data: {e}")
 
-def fetch_user_by_email(email):
+def fetch_user_by_email(phone):
     try:
-        user_doc = db.collection(USER_COLLECTION).document(email).get()
+        user_doc = db.collection(USER_COLLECTION).document(phone).get()
         if user_doc.exists:
             return user_doc.to_dict()
         return None
