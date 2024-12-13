@@ -2,7 +2,7 @@ import numpy as np
 from tensorflow.keras.preprocessing import image
 
 # Class dari semua jenis penyakit
-class_names = ['blast', 'blight', 'brown spot', 'healthy', 'hispa', 'tungro']
+class_names = ['blast', 'blight', 'brown spot', 'hispa', 'tungro', 'healthy']
 penjelasan = [
     'Penyakit Blast(Blas) adalah penyakit yang disebabkan oleh jamur Pyricularia oryzae. Jamur ini dapat menginfeksi pada semua fase pertumbuhan tanaman padi mulai dari persemaian sampai menjelang panen.',
     'Penyakit Blight atau Hawar Daun (Bacterial Leaf Blight) adalah penyakit yang disebabkan oleh bakteri Xanthomonas campestris pv. oryzae (Xoo). Penyakit hawar daun ini disebabkan oleh patogen yang menginfeksi daun padi pada semua fase pertumbuhan tanaman, mulai dari pesemaian sampai menjelang panen. Tingkat kerusakan bervariasi antara 15-80%, bergantung pada tingkat serangan.',
